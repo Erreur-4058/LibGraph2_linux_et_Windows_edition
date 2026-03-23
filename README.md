@@ -16,45 +16,56 @@ Elle permet aux étudiants de passer de Windows à Linux sans modifier une seule
 
 ## 🛠️ Installation des dépendances
 
-Avant de compiler, vous devez installer la bibliothèque **SFML** sur votre système Linux.
+Avant de compiler, vous devez installer la bibliothèque **SFML** et **CMake** sur votre système Linux.
 
 Sur **Ubuntu / Debian / Mint** :
 ```bash
 sudo apt update
-sudo apt install libsfml-dev
+sudo apt install libsfml-dev cmake g++
 ```
 
 ---
 
-## 🏗️ Compilation du Projet
+## 🏗️ Compilation de la Bibliothèque
 
-### Avec le fichier Makefile (recommandé)
-Pour compiler la bibliothèque et l'exemple de test fourni :
+### 1. Méthode recommandée (CMake)
+Puisque le projet utilise CMake, voici la procédure standard pour générer le fichier `libLibGraph2.so` :
+
 ```bash
-make clean
+# Créez un dossier de build pour ne pas polluer les sources
+mkdir build && cd build
+
+# Générez le Makefile et compilez
+cmake ..
 make
 ```
 
-### 2. Compilation de votre programme (avec g++)
-Si vous ne souhaitez pas utiliser CMake pour votre projet, vous pouvez compiler directement avec `g++`.
+### 2. Méthode manuelle (g++)
+Si vous préférez compiler la bibliothèque en une seule ligne sans utiliser CMake :
 
-> [!IMPORTANT]
-> Vous devez d'abord compiler la bibliothèque LibGraph2 elle-même (voir étape 1 ci-dessus) pour générer les fichiers suivants dans le dossier :
-> - `LibGraph2.h`
-> - `libLibGraph2.so`
+```bash
+g++ -shared -fPIC LibGraph2Common.cpp LibGraph2impSFML.cpp -o libLibGraph2.so -lsfml-graphics -lsfml-window -lsfml-system
+```
 
-**Fichiers nécessaires :**
-Copiez les fichiers suivants dans le dossier de votre projet :
+---
+
+## 🚀 Utilisation dans votre projet
+
+### 1. Préparation
+Une fois la compilation terminée, copiez les fichiers suivants dans le dossier de votre propre programme :
 - `LibGraph2.h`
 - `libLibGraph2.so`
+- `Windows.h` & `tchar.h` (indispensables pour la compatibilité)
 
-**Commande de compilation :**
+### 2. Compilation de votre programme
+Utilisez la commande suivante pour lier votre code à LibGraph2 et SFML :
+
 ```bash
 g++ main.cpp -L. -lLibGraph2 -lsfml-graphics -lsfml-window -lsfml-system -o mon_programme
 ```
 
-### 🏃 Exécution
-Si vous obtenez une erreur indiquant que `libLibGraph2.so` est introuvable au lancement, utilisez cette commande pour inclure le dossier courant dans le chemin des bibliothèques :
+### 3. Exécution
+Sous Linux, le système ne cherche pas les bibliothèques dans le dossier courant par défaut. Utilisez cette commande :
 
 ```bash
 export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:.
@@ -64,7 +75,7 @@ export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:.
 ---
 
 ## 💻 Exemple de Code Portable
-Voici un exemple de code qui tourne à l'identique sur Windows et sur cette version Linux :
+Ce code est 100% compatible Windows (Visual Studio) et Linux (g++) :
 
 ```cpp
 #include <Windows.h>
@@ -77,7 +88,7 @@ int APIENTRY _tWinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPTSTR lpCm
     while(waitForEvent()) {
         if(getLastEventType() == evt_type::evtRefresh) {
             beginPaint();
-            setSolidBrush(MakeARGB(255, 255, 0, 0));
+            setSolidBrush(MakeARGB(255, 255, 0, 0)); // Rouge
             drawEllipse(100, 100, 200, 200);
             endPaint();
         }
@@ -90,19 +101,16 @@ int APIENTRY _tWinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPTSTR lpCm
 ---
 
 ## 📝 Structure du projet
+- `CMakeLists.txt` : Script de configuration pour la compilation automatisée.
 - `LibGraph2.h` : En-tête principal corrigé pour Linux.
-- `Windows.h` & `tchar.h` : Couche de compatibilité Windows pour Linux.
-- `LibGraph2impSFML.cpp` : Implémentation du moteur de rendu Linux.
-- `libLibGraph2.so` : La bibliothèque compilée pour Linux.
+- `LibGraph2Common.cpp` : Logique commune de la bibliothèque.
+- `LibGraph2impSFML.cpp` : Implémentation du moteur de rendu via SFML.
+- `Windows.h` & `tchar.h` : Couche de compatibilité Windows.
 
 ---
 
 ## ⚖️ Licence
-
 Ce projet est distribué sous licence **GPLv3**.
-
 Copyright © 2010-2024 Benjamin ALBOUY-KISSI.
-
-Projet original disponible sur le [GitLab de l'IUT](https://gitlab-lepuy.iut.uca.fr/bealbouy/libGraph).
 
 Portage Linux réalisé par **Jeremi Roux** (avec l'assistance d'Antigravity).
