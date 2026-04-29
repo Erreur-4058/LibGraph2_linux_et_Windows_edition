@@ -55,7 +55,11 @@ CLibGraph2::CLibGraph2()
       m_nNormalisedSizeY(0), m_dScale(1.0), m_nOffsetX(0), m_nOffsetY(0),
       m_bBackBuffered(false) {
   // Charger une police par défaut
+  #ifdef _WIN32
+  std::string defaultFont = "C:\\Windows\\Fonts\\arial.ttf";
+#else
   std::string defaultFont = "/usr/share/fonts/truetype/dejavu/DejaVuSans.ttf";
+#endif
   FILE *f = fopen(defaultFont.c_str(), "r");
   if (f) {
     fclose(f);
@@ -383,11 +387,18 @@ void CLibGraph2::setFont(const CString &strFontName, float fPointSize,
 
   // Essayer de charger la police depuis le système
   std::string fontName = std::string(strFontName);
+  #ifdef _WIN32
+  std::vector<std::string> paths = {
+      "C:\\Windows\\Fonts\\" + fontName + ".ttf",
+      "C:\\Windows\\Fonts\\arial.ttf"
+  };
+#else
   std::vector<std::string> paths = {
       "/usr/share/fonts/truetype/" + fontName + ".ttf",
       "/usr/share/fonts/truetype/dejavu/" + fontName + ".ttf",
       "/usr/share/fonts/truetype/liberation/" + fontName + ".ttf",
       "/usr/share/fonts/truetype/freefont/" + fontName + ".ttf"};
+#endif
 
   bool loaded = false;
   for (const auto &path : paths) {
@@ -404,7 +415,11 @@ void CLibGraph2::setFont(const CString &strFontName, float fPointSize,
   if (!loaded) {
     // Fallback silencieux vers DejaVuSans si déjà chargé ou tenter le chemin
     // dur
+    #ifdef _WIN32
+    m_font.loadFromFile("C:\\Windows\\Fonts\\arial.ttf");
+#else
     m_font.loadFromFile("/usr/share/fonts/truetype/dejavu/DejaVuSans.ttf");
+#endif
   }
 }
 
