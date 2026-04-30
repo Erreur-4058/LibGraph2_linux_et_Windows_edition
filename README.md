@@ -145,6 +145,14 @@ export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:.
 ```
 ---
 
+🔗 Liens Utiles
+
+    Documentation technique : Documentation LibGraph2
+
+    Dépôt original : Code source LibGraph2 (GitLab)
+
+---
+
 ## ⚖️ Licence
 Ce projet est distribué sous licence **GPLv3**.
 Copyright © 2010-2024 Benjamin ALBOUY-KISSI.
