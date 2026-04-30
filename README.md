@@ -147,9 +147,9 @@ export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:.
 
 🔗 Liens Utiles
 
-    Documentation technique : Documentation LibGraph2
+Documentation technique : http://wiki-4058.duckdns.org/LibGraph2/LibGraph2_doc
 
-    Dépôt original : Code source LibGraph2 (GitLab)
+Dépôt original (GitLab) : https://gitlab-lepuy.iut.uca.fr/bealbouy/libGraph/-/blob/master/LibGraph2/LibGraph2.h
 
 ---
 
